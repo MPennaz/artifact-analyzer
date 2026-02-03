@@ -15,12 +15,72 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, MapPin, Crown, Eye } from 'lucide-react';
 
 function formatCoord(n: number | null | undefined) {
   if (n == null) return '—';
   return n.toFixed(5);
+}
+
+function CoordPill({
+  label,
+  onClick
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title="Open on map"
+      className={[
+        'inline-flex items-center gap-2 rounded-full border px-3 py-1',
+        'font-mono text-xs',
+        'cursor-pointer select-none',
+        'border-sky-500/30 bg-sky-500/10 text-sky-200',
+        'hover:bg-sky-500/20 hover:border-sky-400/50 hover:text-sky-100',
+        'active:scale-[0.99] transition'
+      ].join(' ')}
+    >
+      <MapPin className="h-3.5 w-3.5" />
+      <span className="underline underline-offset-4 decoration-sky-400/50">
+        {label}
+      </span>
+    </button>
+  );
+}
+
+function AccessPill({ isOwner }: { isOwner: boolean }) {
+  if (isOwner) {
+    return (
+      <span
+        className={[
+          'inline-flex items-center gap-2 rounded-full border px-3 py-1',
+          'text-xs font-semibold',
+          'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+        ].join(' ')}
+        title="You created this site"
+      >
+        <Crown className="h-3.5 w-3.5" />
+        Owner
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={[
+        'inline-flex items-center gap-2 rounded-full border px-3 py-1',
+        'text-xs font-semibold',
+        'border-violet-500/30 bg-violet-500/10 text-violet-200'
+      ].join(' ')}
+      title="You can view, but not edit"
+    >
+      <Eye className="h-3.5 w-3.5" />
+      Read-only
+    </span>
+  );
 }
 
 export function InvestigationSitesTable({
@@ -80,34 +140,32 @@ export function InvestigationSitesTable({
               const hasLoc = r.latitude != null && r.longitude != null;
 
               return (
-                <TableRow key={r.id} className="hover:bg-neutral-900/40">
+                <TableRow
+                  key={r.id}
+                  className={[
+                    'hover:bg-neutral-900/50 transition',
+                    'data-[state=selected]:bg-neutral-900/60'
+                  ].join(' ')}
+                >
                   <TableCell className="font-medium">{r.name}</TableCell>
 
                   <TableCell className="hidden md:table-cell text-neutral-400">
                     {r.description ?? '—'}
                   </TableCell>
 
-                  <TableCell className="hidden lg:table-cell text-neutral-400">
+                  <TableCell className="hidden lg:table-cell">
                     {hasLoc ? (
-                      <button
-                        type="button"
+                      <CoordPill
+                        label={`${formatCoord(r.latitude)}, ${formatCoord(r.longitude)}`}
                         onClick={() => jumpToMap(r)}
-                        className="font-mono text-xs underline underline-offset-4 hover:text-white"
-                        title="Open on map"
-                      >
-                        {formatCoord(r.latitude)}, {formatCoord(r.longitude)}
-                      </button>
+                      />
                     ) : (
-                      '—'
+                      <span className="text-sm text-neutral-500">—</span>
                     )}
                   </TableCell>
 
                   <TableCell>
-                    {r.isOwner ? (
-                      <Badge>Owner</Badge>
-                    ) : (
-                      <Badge variant="secondary">Read-only</Badge>
-                    )}
+                    <AccessPill isOwner={!!r.isOwner} />
                   </TableCell>
 
                   <TableCell className="text-right">
@@ -141,4 +199,3 @@ export function InvestigationSitesTable({
     </div>
   );
 }
-
