@@ -27,6 +27,18 @@ type MapSitePin = {
   isOwner: boolean;
 };
 
+type SelectSite = {
+  id: string;
+  name: string;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+type Props = {
+  selectedSiteId?: string;
+  onSelectSite?: (site: SelectSite) => void;
+};
+
 /* -------------------------------------------------------
    Fix Leaflet marker icons (Next.js)
 ------------------------------------------------------- */
@@ -34,8 +46,7 @@ const DefaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconRetinaUrl:
     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl:
-    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41]
 });
@@ -58,7 +69,7 @@ function FitAll({ points }: { points: Array<[number, number]> }) {
 }
 
 /* -------------------------------------------------------
-   Focus map + open popup for siteId deep link
+   Focus map + open popup for siteId
 ------------------------------------------------------- */
 function FocusSite({
   site,
@@ -105,9 +116,14 @@ function ClickToCreate({
   return null;
 }
 
-export function SitesMap() {
+export function SitesMap({ selectedSiteId, onSelectSite }: Props) {
   const sp = useSearchParams();
-  const focusSiteId = sp.get('siteId');
+
+  // Deep link can still control focus (e.g., /map?siteId=...)
+  const focusSiteIdFromUrl = sp.get('siteId') ?? undefined;
+
+  // Prefer URL focus first; otherwise prefer parent-selected
+  const focusSiteId = focusSiteIdFromUrl ?? selectedSiteId;
 
   const [rows, setRows] = React.useState<MapSitePin[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -193,7 +209,6 @@ export function SitesMap() {
           style={{ height: '100%', width: '100%' }}
         >
           <AttributionControl position="bottomright" prefix={false} />
-
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {/* Click map -> create site at lat/lng */}
@@ -208,7 +223,7 @@ export function SitesMap() {
           {/* If no focus, fit to all pins */}
           {!focused ? <FitAll points={points} /> : null}
 
-          {/* If focusSiteId exists, center and open popup */}
+          {/* If focused, center and open popup */}
           {focused ? <FocusSite site={focused} markerRef={markerRef} /> : null}
 
           {pins.map((p) => (
@@ -218,6 +233,16 @@ export function SitesMap() {
               ref={(ref) => {
                 markerRef.current[p.id] = ref ?? null;
               }}
+              eventHandlers={{
+                click: () => {
+                  onSelectSite?.({
+                    id: p.id,
+                    name: p.name,
+                    latitude: p.latitude,
+                    longitude: p.longitude
+                  });
+                }
+              }}
             >
               <Popup>
                 <div className="space-y-1">
@@ -225,8 +250,22 @@ export function SitesMap() {
                   <div className="text-xs opacity-80">
                     {p.lat.toFixed(6)}, {p.lng.toFixed(6)}
                   </div>
-                  <div className="text-xs">
-                    {p.isOwner ? 'Owner' : 'Read-only'}
+                  <div className="text-xs">{p.isOwner ? 'Owner' : 'Read-only'}</div>
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      className="text-xs underline underline-offset-4"
+                      onClick={() => {
+                        onSelectSite?.({
+                          id: p.id,
+                          name: p.name,
+                          latitude: p.latitude,
+                          longitude: p.longitude
+                        });
+                      }}
+                    >
+                      View artifacts
+                    </button>
                   </div>
                 </div>
               </Popup>
@@ -251,6 +290,7 @@ export function SitesMap() {
           longitude: picked?.lng ?? null
         }}
         onSaved={async () => {
+          setCreateOpen(false);
           await reloadPins();
         }}
       />
