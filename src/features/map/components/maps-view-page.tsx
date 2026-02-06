@@ -21,25 +21,35 @@ export function MapsViewPage() {
 
   // allow preselect via /map?siteId=...
   const initialSiteId = sp.get('siteId') ?? undefined;
+  const initialSiteName = sp.get('name') ?? undefined;
 
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | undefined>(
     initialSiteId
   );
+  const [selectedSiteName, setSelectedSiteName] = React.useState<
+    string | undefined
+  >(initialSiteName);
 
   // keep selection in sync if user navigates via links with querystring
   React.useEffect(() => {
     if (initialSiteId) setSelectedSiteId(initialSiteId);
-  }, [initialSiteId]);
+    if (initialSiteName) setSelectedSiteName(initialSiteName);
+  }, [initialSiteId, initialSiteName]);
 
   function handleSelectSite(site: MapSelectableSite) {
     setSelectedSiteId(site.id);
+    setSelectedSiteName(site.name);
 
-    // optional: keep URL in sync so the details panel is linkable
+    // keep URL in sync so the details panel is linkable
     const qs = new URLSearchParams(sp.toString());
     qs.set('siteId', site.id);
-    if (site.latitude != null) qs.set('lat', String(site.latitude));
-    if (site.longitude != null) qs.set('lng', String(site.longitude));
     qs.set('name', site.name);
+
+    if (site.latitude != null) qs.set('lat', String(site.latitude));
+    else qs.delete('lat');
+
+    if (site.longitude != null) qs.set('lng', String(site.longitude));
+    else qs.delete('lng');
 
     router.replace(`/map?${qs.toString()}`);
   }
@@ -56,7 +66,10 @@ export function MapsViewPage() {
 
       {/* right: details */}
       <div className="w-[420px] shrink-0">
-        <MapDetailsPanel siteId={selectedSiteId ?? null} />
+        <MapDetailsPanel
+          siteId={selectedSiteId ?? null}
+          siteName={selectedSiteName ?? null}
+        />
       </div>
     </div>
   );

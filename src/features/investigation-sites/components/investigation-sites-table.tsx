@@ -110,14 +110,22 @@ export function InvestigationSitesTable({
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800">
-      <Table>
+    <div className="rounded-lg border border-neutral-800 overflow-x-hidden">
+      {/* table-fixed + explicit column widths prevent horizontal growth */}
+      <Table className="w-full table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead className="w-[240px]">Name</TableHead>
+
+            {/* Let description take remaining space and WRAP */}
             <TableHead className="hidden md:table-cell">Description</TableHead>
-            <TableHead className="hidden lg:table-cell">Location</TableHead>
-            <TableHead>Access</TableHead>
+
+            <TableHead className="hidden lg:table-cell w-[220px]">
+              Location
+            </TableHead>
+
+            <TableHead className="w-[140px]">Access</TableHead>
+
             <TableHead className="w-[140px] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -147,9 +155,13 @@ export function InvestigationSitesTable({
                     'data-[state=selected]:bg-neutral-900/60'
                   ].join(' ')}
                 >
-                  <TableCell className="font-medium">{r.name}</TableCell>
+                  {/* Prevent name from forcing width; allow wrapping if needed */}
+                  <TableCell className="font-medium whitespace-normal break-words">
+                    {r.name}
+                  </TableCell>
 
-                  <TableCell className="hidden md:table-cell text-neutral-400">
+                  {/* WRAP description instead of expanding table width */}
+                  <TableCell className="hidden md:table-cell text-neutral-400 whitespace-normal break-words">
                     {r.description ?? '—'}
                   </TableCell>
 

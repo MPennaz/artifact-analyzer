@@ -38,7 +38,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 git remote set-url origin https://github.com/mpennaz/artifact-analyzer.git
 
+## 
 git add .
-git commit -m “Added Details Pane and widened layout"
+git commit -m "Updated Main Sites Table UI"
 git push
 

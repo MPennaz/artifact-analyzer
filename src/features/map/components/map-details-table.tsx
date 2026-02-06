@@ -9,7 +9,7 @@ export type ArtifactRow = {
   title: string;
   notes: string | null;
   recordedAt: string | null;
-  imageUrl: string | null; // later: Supabase Storage public URL
+  imageUrl: string | null; // /demo/img1.png etc
 };
 
 function fmtDate(s: string | null) {
@@ -26,14 +26,22 @@ export function MapDetailsTable({ rows }: { rows: ArtifactRow[] }) {
   return (
     <div className="space-y-3">
       {rows.map((r) => (
-        <div
-          key={r.id}
-          className="rounded-md border border-neutral-800 p-3"
-        >
+        <div key={r.id} className="rounded-md border border-neutral-800 p-3">
           <div className="flex gap-3">
-            {/* image stub */}
-            <div className="h-14 w-14 rounded bg-neutral-800 flex items-center justify-center text-xs text-neutral-400">
-              img
+            {/* image */}
+            <div className="h-14 w-14 overflow-hidden rounded bg-neutral-800">
+              {r.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={r.imageUrl}
+                  alt={r.title}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-xs text-neutral-400">
+                  img
+                </div>
+              )}
             </div>
 
             <div className="min-w-0 flex-1">
@@ -41,7 +49,7 @@ export function MapDetailsTable({ rows }: { rows: ArtifactRow[] }) {
                 {r.title}
               </div>
               <div className="text-xs text-neutral-400">{fmtDate(r.recordedAt)}</div>
-              <div className="mt-1 text-sm text-neutral-300">
+              <div className="mt-1 whitespace-pre-line text-sm text-neutral-300">
                 {r.notes ?? '—'}
               </div>
             </div>
