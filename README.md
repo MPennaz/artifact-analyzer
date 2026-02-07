@@ -40,6 +40,6 @@ git remote set-url origin https://github.com/mpennaz/artifact-analyzer.git
 
 ## 
 git add .
-git commit -m "UI enhancements and added dashboard round 2"
+git commit -m "Updated login page UI"
 git push
 
