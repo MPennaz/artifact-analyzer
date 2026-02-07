@@ -96,7 +96,7 @@ export default function DashboardPage() {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-medium text-fuchsia-200">
               <Sparkles className="h-4 w-4" />
-              Artifact Analyzer • Demo Ready
+              Artifact Analyzer 
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight text-neutral-100">
@@ -137,7 +137,7 @@ export default function DashboardPage() {
           icon={MapPin}
           label="Sites"
           value="3"
-          hint="Three historic locations loaded for judging."
+          hint="Three historic locations loaded"
         />
         <StatPill
           icon={Pickaxe}
@@ -220,29 +220,13 @@ export default function DashboardPage() {
                   Click <span className="text-neutral-200">AI Insights</span>{' '}
                   to pop the modal with the summary + next steps.
                 </li>
-                <li>
-                  Mention: “Real version will generate these from uploaded
-                  evidence / notes.”
-                </li>
+                
               </ol>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Badge className="border-sky-500/30 bg-sky-500/10 text-sky-200">
-                Kid-friendly UI
-              </Badge>
-              <Badge className="border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-200">
-                Storytelling
-              </Badge>
-              <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-200">
-                Fast clicks
-              </Badge>
-            </div>
+            
 
-            <div className="text-xs text-neutral-500">
-              Tip: If you want the counts to be dynamic later, we can fetch them
-              from the real APIs — but hardcoded is perfect for judging.
-            </div>
+            
           </CardContent>
         </Card>
       </div>

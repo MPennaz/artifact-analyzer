@@ -112,7 +112,14 @@ export function MapDetailsPanel({
           <Button
             size="sm"
             onClick={() => setAiOpen(true)}
-            className="bg-fuchsia-600 text-white hover:bg-fuchsia-500"
+            className="
+                cursor-pointer
+                bg-fuchsia-600 text-white
+                hover:bg-fuchsia-500
+                hover:shadow-lg
+                active:scale-[0.98]
+                transition"
+
             title="Open AI Insights"
           >
             <Sparkles className="mr-2 h-4 w-4" />

@@ -40,6 +40,6 @@ git remote set-url origin https://github.com/mpennaz/artifact-analyzer.git
 
 ## 
 git add .
-git commit -m "Updated Main Sites Table UI"
+git commit -m "UI enhancements and added dashboard"
 git push
 
